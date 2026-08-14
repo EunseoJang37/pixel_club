@@ -15,8 +15,9 @@
 <main id="wrap"><canvas id="game" width="600" height="800"></canvas><div id="hud"><div>SCORE <span id="score">000000</span><div class="small">HIGH <span id="high">000000</span></div></div><div>BALLS <span id="balls">3</span><div class="small" id="message">PRESS SPACE</div></div></div></main>
 <div id="help"><span class="key">←</span><span class="key">→</span> flippers &nbsp; <span class="key">Space</span> launch / restart &nbsp; <span class="key">Z</span><span class="key">/</span><span class="key">?</span> also work</div>
 <script>
-const c=document.querySelector('#game'),x=c.getContext('2d'),ui={score:score,high:high,balls:balls,message:message};
+const c=document.querySelector('#game'),x=c.getContext('2d');
 let keys={},score=0,high=+localStorage.pinballHigh||0,ballCount=3,playing=false,launching=false,ball,flL=0,flR=0,particles=[],stars=[];
+const ui={score:document.querySelector('#score'),high:document.querySelector('#high'),balls:document.querySelector('#balls'),message:document.querySelector('#message')};
 for(let i=0;i<85;i++)stars.push({x:Math.random()*600,y:Math.random()*800,r:Math.random()*1.6,a:Math.random()});
 const bumpers=[{x:205,y:270,r:36,h:0},{x:396,y:270,r:36,h:0},{x:300,y:375,r:42,h:0}];
 const targets=[{x:110,y:185,a:-.25,on:0},{x:490,y:185,a:.25,on:0},{x:125,y:445,a:.3,on:0},{x:475,y:445,a:-.3,on:0}];
