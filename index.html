@@ -22,8 +22,8 @@ for(let i=0;i<85;i++)stars.push({x:Math.random()*600,y:Math.random()*800,r:Math.
 const bumpers=[{x:205,y:270,r:36,h:0},{x:396,y:270,r:36,h:0},{x:300,y:375,r:42,h:0}];
 const targets=[{x:110,y:185,a:-.25,on:0},{x:490,y:185,a:.25,on:0},{x:125,y:445,a:.3,on:0},{x:475,y:445,a:-.3,on:0}];
 const lowerRails=[
- [{x:35,y:565},{x:95,y:735}], [{x:95,y:735},{x:280,y:755}],
- [{x:565,y:565},{x:505,y:735}], [{x:505,y:735},{x:320,y:755}]
+ [{x:35,y:565},{x:95,y:735}], [{x:95,y:735},{x:280,y:735}],
+ [{x:565,y:565},{x:505,y:735}], [{x:505,y:735},{x:320,y:735}]
 ];
 function newBall(){ball={x:300,y:165,vx:(Math.random()-.5)*4,vy:0,r:11,trail:[]};launching=true;ui.message.textContent='';}
 newBall();
@@ -37,16 +37,16 @@ function update(){flL+=(keys.arrowleft||keys.z?1:0-flL)*.28;flR+=(keys.arrowrigh
   if(ball.x-ball.r<35){ball.x=35+ball.r;ball.vx=Math.abs(ball.vx)*.9}if(ball.x+ball.r>565){ball.x=565-ball.r;ball.vx=-Math.abs(ball.vx)*.9}if(ball.y-ball.r<75){ball.y=75+ball.r;ball.vy=Math.abs(ball.vy)*.9}
   lowerRails.forEach(r=>lineHit(r[0],r[1]));
   bumpers.forEach(circleHit);targets.forEach(t=>{let dx=Math.cos(t.a)*18,dy=Math.sin(t.a)*18;if(lineHit({x:t.x-dx,y:t.y-dy},{x:t.x+dx,y:t.y+dy})){t.on=10;add(50);spark(t.x,t.y,'#ff65cb',7)}});
-  const L0={x:95,y:735},L1={x:150,y:680},L2={x:278+flL*18,y:700-flL*48},R0={x:505,y:735},R1={x:450,y:680},R2={x:322-flR*18,y:700-flR*48}; if(lineHit(L0,L1)){} if(lineHit(R0,R1)){} if(lineHit(L1,L2)){ball.vy-=flL*12;add(10)} if(lineHit(R1,R2)){ball.vy-=flR*12;add(10)}
+  const L1={x:150,y:680},L2={x:278+flL*18,y:700-flL*48},R1={x:450,y:680},R2={x:322-flR*18,y:700-flR*48}; if(lineHit(L1,L2)){ball.vy-=flL*12;add(10)} if(lineHit(R1,R2)){ball.vy-=flR*12;add(10)}
   if(ball.y>820){ballCount--;ui.balls.textContent=ballCount;if(ballCount){newBall()}else{playing=false;ui.message.textContent='GAME OVER · SPACE';}}
  }
  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.life--});particles=particles.filter(p=>p.life>0);bumpers.forEach(b=>b.h=Math.max(0,b.h-1));targets.forEach(t=>t.on=Math.max(0,t.on-1));}
 function glow(col,blur=12){x.shadowColor=col;x.shadowBlur=blur;x.strokeStyle=col;x.fillStyle=col}function seg(a,b,w=7){x.lineWidth=w;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}
 function draw(){x.clearRect(0,0,600,800);x.fillStyle='#06111f';x.fillRect(0,0,600,800);stars.forEach(s=>{x.fillStyle=`rgba(128,230,255,${.18+s.a*.45})`;x.fillRect(s.x,s.y,s.r,s.r)});
- x.save();glow('#27e6ff',20);x.lineWidth=6;x.strokeRect(35,75,530,690);x.beginPath();x.moveTo(35,565);x.lineTo(95,735);x.lineTo(280,755);x.moveTo(565,565);x.lineTo(505,735);x.lineTo(320,755);x.stroke();x.restore();
+ x.save();glow('#27e6ff',20);x.lineWidth=6;x.strokeRect(35,75,530,690);x.beginPath();x.moveTo(35,565);x.lineTo(95,735);x.lineTo(280,735);x.moveTo(565,565);x.lineTo(505,735);x.lineTo(320,735);x.stroke();x.restore();
  bumpers.forEach(b=>{x.save();glow(b.h?'#fff07a':'#ff4fb9',b.h?28:14);x.lineWidth=5;x.beginPath();x.arc(b.x,b.y,b.r,0,7);x.stroke();x.fillStyle='rgba(255,50,170,.16)';x.fill();x.restore();});
  targets.forEach(t=>{x.save();glow(t.on?'#fff':'#ff65cb',t.on?20:9);x.translate(t.x,t.y);x.rotate(t.a);x.fillRect(-18,-6,36,12);x.restore();});
- x.save();glow('#8dff65',18);seg({x:95,y:735},{x:150,y:680},7);seg({x:505,y:735},{x:450,y:680},7);seg({x:150,y:680},{x:278+flL*18,y:700-flL*48},13);seg({x:450,y:680},{x:322-flR*18,y:700-flR*48},13);x.restore();
+ x.save();glow('#8dff65',18);seg({x:150,y:680},{x:278+flL*18,y:700-flL*48},13);seg({x:450,y:680},{x:322-flR*18,y:700-flR*48},13);x.restore();
  x.save();glow('#00dcff',18);ball.trail.forEach((p,i)=>{x.globalAlpha=i/18;x.beginPath();x.arc(p.x,p.y,ball.r*i/14,0,7);x.fill()});x.globalAlpha=1;x.beginPath();x.arc(ball.x,ball.y,ball.r,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(ball.x-3,ball.y-4,3,0,7);x.fill();x.restore();
  particles.forEach(p=>{x.save();glow(p.col,12);x.globalAlpha=p.life/32;x.fillRect(p.x-2,p.y-2,4,4);x.restore()});
  x.fillStyle='#d9faff';x.font='bold 27px Arial';x.textAlign='center';x.fillText('NEON  PINBALL',300,125);x.font='12px Arial';x.fillStyle='#78ddea';x.fillText('HIT THE LIGHTS · KEEP THE BALL ALIVE',300,148);requestAnimationFrame(()=>{update();draw()});}
