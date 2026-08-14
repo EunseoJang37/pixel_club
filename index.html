@@ -21,9 +21,9 @@ const ui={score:document.querySelector('#score'),high:document.querySelector('#h
 for(let i=0;i<85;i++)stars.push({x:Math.random()*600,y:Math.random()*800,r:Math.random()*1.6,a:Math.random()});
 const bumpers=[{x:205,y:270,r:36,h:0},{x:396,y:270,r:36,h:0},{x:300,y:375,r:42,h:0}];
 const targets=[{x:110,y:185,a:-.25,on:0},{x:490,y:185,a:.25,on:0},{x:125,y:445,a:.3,on:0},{x:475,y:445,a:-.3,on:0}];
-function newBall(){ball={x:545,y:685,vx:0,vy:0,r:11,trail:[]};launching=false;ui.message.textContent='PRESS SPACE';}
+function newBall(){ball={x:300,y:165,vx:(Math.random()-.5)*4,vy:0,r:11,trail:[]};launching=true;ui.message.textContent='';}
 newBall();
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if([' ','arrowleft','arrowright','z','/'].includes(e.key.toLowerCase()))e.preventDefault();if(e.key===' '){if(!playing){score=0;ballCount=3;playing=true;newBall();launching=true;ball.vy=-18;ui.message.textContent=''}else if(!launching&&ball.x>510){launching=true;ball.vy=-18;ui.message.textContent='';}}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if([' ','arrowleft','arrowright','z','/'].includes(e.key.toLowerCase()))e.preventDefault();if(e.key===' '&&!playing){score=0;ballCount=3;playing=true;newBall();}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 function add(n){score+=n;high=Math.max(high,score);localStorage.pinballHigh=high;ui.score.textContent=String(score).padStart(6,'0');ui.high.textContent=String(high).padStart(6,'0');}
 function spark(px,py,col,n=12){for(let i=0;i<n;i++){let a=Math.random()*7,v=1+Math.random()*4;particles.push({x:px,y:py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:18+Math.random()*15,col});}}
 function lineHit(a,b){let dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((ball.x-a.x)*dx+(ball.y-a.y)*dy)/l)),px=a.x+t*dx,py=a.y+t*dy,ex=ball.x-px,ey=ball.y-py,d=Math.hypot(ex,ey);if(d<ball.r+7&&ball.vx*ex+ball.vy*ey<0){let nx=ex/d,ny=ey/d,q=ball.vx*nx+ball.vy*ny;ball.vx-=2*q*nx;ball.vy-=2*q*ny;ball.x=px+nx*(ball.r+8);ball.y=py+ny*(ball.r+8);return true}}
