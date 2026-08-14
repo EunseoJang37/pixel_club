@@ -21,6 +21,10 @@ const ui={score:document.querySelector('#score'),high:document.querySelector('#h
 for(let i=0;i<85;i++)stars.push({x:Math.random()*600,y:Math.random()*800,r:Math.random()*1.6,a:Math.random()});
 const bumpers=[{x:205,y:270,r:36,h:0},{x:396,y:270,r:36,h:0},{x:300,y:375,r:42,h:0}];
 const targets=[{x:110,y:185,a:-.25,on:0},{x:490,y:185,a:.25,on:0},{x:125,y:445,a:.3,on:0},{x:475,y:445,a:-.3,on:0}];
+const lowerRails=[
+ [{x:35,y:565},{x:95,y:735}], [{x:95,y:735},{x:235,y:755}],
+ [{x:565,y:565},{x:505,y:735}], [{x:505,y:735},{x:365,y:755}]
+];
 function newBall(){ball={x:300,y:165,vx:(Math.random()-.5)*4,vy:0,r:11,trail:[]};launching=true;ui.message.textContent='';}
 newBall();
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if([' ','arrowleft','arrowright','z','/'].includes(e.key.toLowerCase()))e.preventDefault();if(e.key===' '&&!playing){score=0;ballCount=3;playing=true;newBall();}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
@@ -31,6 +35,7 @@ function circleHit(o){let dx=ball.x-o.x,dy=ball.y-o.y,d=Math.hypot(dx,dy),min=ba
 function update(){flL+=(keys.arrowleft||keys.z?1:0-flL)*.28;flR+=(keys.arrowright||keys['/']?1:0-flR)*.28;flL=Math.max(0,Math.min(1,flL));flR=Math.max(0,Math.min(1,flR));
  if(playing){ball.trail.push({x:ball.x,y:ball.y});if(ball.trail.length>12)ball.trail.shift();ball.vy+=.29;ball.x+=ball.vx;ball.y+=ball.vy;ball.vx*=.998;ball.vy*=.998;
   if(ball.x-ball.r<35){ball.x=35+ball.r;ball.vx=Math.abs(ball.vx)*.9}if(ball.x+ball.r>565){ball.x=565-ball.r;ball.vx=-Math.abs(ball.vx)*.9}if(ball.y-ball.r<75){ball.y=75+ball.r;ball.vy=Math.abs(ball.vy)*.9}
+  lowerRails.forEach(r=>lineHit(r[0],r[1]));
   bumpers.forEach(circleHit);targets.forEach(t=>{let dx=Math.cos(t.a)*18,dy=Math.sin(t.a)*18;if(lineHit({x:t.x-dx,y:t.y-dy},{x:t.x+dx,y:t.y+dy})){t.on=10;add(50);spark(t.x,t.y,'#ff65cb',7)}});
   const L1={x:130,y:675},L2={x:248+flL*30,y:700-flL*45},R1={x:470,y:675},R2={x:352-flR*30,y:700-flR*45}; if(lineHit(L1,L2)){ball.vy-=flL*12;add(10)} if(lineHit(R1,R2)){ball.vy-=flR*12;add(10)}
   if(ball.y>820){ballCount--;ui.balls.textContent=ballCount;if(ballCount){newBall()}else{playing=false;ui.message.textContent='GAME OVER · SPACE';}}
